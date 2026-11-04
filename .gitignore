@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+# API Key de Google Maps
+secrets.properties
