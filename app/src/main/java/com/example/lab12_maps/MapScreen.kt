@@ -28,8 +28,7 @@ fun MapScreen() {
             // Añadir marcador en Arequipa Perú
             Marker(
                 state = rememberMarkerState(position = ArequipaLocation),
-                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE), // Icono azul
-                title = "Arequipa, Perú"
+                icon = BitmapDescriptorFactory.fromResource(R.drawable.montana), // Icono personalizado                title = "Arequipa, Perú"
             )
         }
     }
