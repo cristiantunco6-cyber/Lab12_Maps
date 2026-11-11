@@ -3,7 +3,9 @@ package com.example.lab12_maps
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -17,6 +19,14 @@ fun MapScreen() {
     val ArequipaLocation = LatLng(-16.4040102, -71.559611) // Arequipa, Perú
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(ArequipaLocation, 12f)
+    }
+
+    // Mover la cámara automáticamente a Yura
+    LaunchedEffect(Unit) {
+        cameraPositionState.animate(
+            update = CameraUpdateFactory.newLatLngZoom(LatLng(-16.2520984, -71.6836503), 12f), // Mover a Yura
+            durationMs = 3000
+        )
     }
 
     // Lista de puntos de interés
