@@ -9,16 +9,20 @@ import androidx.compose.ui.graphics.Color
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.Dash
+import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polygon
+import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 
 @Composable
 fun MapScreen() {
     val ArequipaLocation = LatLng(-16.4040102, -71.559611) // Arequipa, Perú
+    val YuraLocation = LatLng(-16.2520984, -71.6836503)   // Yura
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(ArequipaLocation, 12f)
     }
@@ -26,7 +30,7 @@ fun MapScreen() {
     // Mover la cámara automáticamente a Yura
     LaunchedEffect(Unit) {
         cameraPositionState.animate(
-            update = CameraUpdateFactory.newLatLngZoom(LatLng(-16.2520984, -71.6836503), 12f), // Mover a Yura
+            update = CameraUpdateFactory.newLatLngZoom(YuraLocation, 12f), // Mover a Yura
             durationMs = 3000
         )
     }
@@ -58,6 +62,13 @@ fun MapScreen() {
         LatLng(-16.398744, -71.536529),
         LatLng(-16.399178, -71.536289),
         LatLng(-16.399299, -71.536721)
+    )
+
+    // Coordenadas de la ruta (polilínea)
+    val rutaCentroMall = listOf(
+        LatLng(-16.399020, -71.536625), // Plaza de Armas
+        LatLng(-16.422985, -71.530970), // Parque Lambramani
+        LatLng(-16.432660, -71.509235)  // Mall Aventura
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -100,6 +111,21 @@ fun MapScreen() {
                 strokeColor = Color.Red,
                 fillColor = Color.Blue,
                 strokeWidth = 5f
+            )
+
+            // Polilínea 1: ruta Plaza de Armas -> Lambramani -> Mall Aventura
+            Polyline(
+                points = rutaCentroMall,
+                color = Color.Red,
+                width = 10f
+            )
+
+            // Polilínea 2: línea punteada de Arequipa a Yura
+            Polyline(
+                points = listOf(ArequipaLocation, YuraLocation),
+                color = Color.Magenta,
+                width = 8f,
+                pattern = listOf(Dash(30f), Gap(20f))
             )
         }
     }
