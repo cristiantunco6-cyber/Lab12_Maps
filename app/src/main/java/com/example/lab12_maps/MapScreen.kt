@@ -1,11 +1,26 @@
 package com.example.lab12_maps
 
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -13,6 +28,8 @@ import com.google.android.gms.maps.model.Dash
 import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polygon
 import com.google.maps.android.compose.Polyline
@@ -34,6 +51,9 @@ fun MapScreen() {
             durationMs = 3000
         )
     }
+
+    // Ejercicio 1: estado del tipo de mapa
+    var tipoMapa by remember { mutableStateOf(MapType.NORMAL) }
 
     // Lista de puntos de interés
     val locations = listOf(
@@ -75,7 +95,8 @@ fun MapScreen() {
         // Añadir GoogleMap al layout
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState
+            cameraPositionState = cameraPositionState,
+            properties = MapProperties(mapType = tipoMapa) // Tipo de mapa seleccionado
         ) {
             // Añadir marcador en Arequipa Perú
             Marker(
@@ -94,31 +115,12 @@ fun MapScreen() {
             }
 
             // Dibujar polígonos
-            Polygon(
-                points = plazaDeArmasPolygon,
-                strokeColor = Color.Red,
-                fillColor = Color.Blue,
-                strokeWidth = 5f
-            )
-            Polygon(
-                points = parqueLambramaniPolygon,
-                strokeColor = Color.Red,
-                fillColor = Color.Blue,
-                strokeWidth = 5f
-            )
-            Polygon(
-                points = mallAventuraPolygon,
-                strokeColor = Color.Red,
-                fillColor = Color.Blue,
-                strokeWidth = 5f
-            )
+            Polygon(points = plazaDeArmasPolygon, strokeColor = Color.Red, fillColor = Color.Blue, strokeWidth = 5f)
+            Polygon(points = parqueLambramaniPolygon, strokeColor = Color.Red, fillColor = Color.Blue, strokeWidth = 5f)
+            Polygon(points = mallAventuraPolygon, strokeColor = Color.Red, fillColor = Color.Blue, strokeWidth = 5f)
 
             // Polilínea 1: ruta Plaza de Armas -> Lambramani -> Mall Aventura
-            Polyline(
-                points = rutaCentroMall,
-                color = Color.Red,
-                width = 10f
-            )
+            Polyline(points = rutaCentroMall, color = Color.Red, width = 10f)
 
             // Polilínea 2: línea punteada de Arequipa a Yura
             Polyline(
@@ -127,6 +129,31 @@ fun MapScreen() {
                 width = 8f,
                 pattern = listOf(Dash(30f), Gap(20f))
             )
+        }
+
+        // Ejercicio 1: botones para cambiar el tipo de mapa
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(8.dp)
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            listOf(
+                "Normal" to MapType.NORMAL,
+                "Satélite" to MapType.SATELLITE,
+                "Híbrido" to MapType.HYBRID,
+                "Terreno" to MapType.TERRAIN
+            ).forEach { (nombre, tipo) ->
+                Button(
+                    onClick = { tipoMapa = tipo },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (tipoMapa == tipo) Color(0xFF1A73E8) else Color.White,
+                        contentColor = if (tipoMapa == tipo) Color.White else Color.Black
+                    )
+                ) { Text(nombre) }
+            }
         }
     }
 }
