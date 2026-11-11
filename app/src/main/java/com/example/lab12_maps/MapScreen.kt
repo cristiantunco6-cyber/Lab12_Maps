@@ -48,6 +48,7 @@ import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import kotlinx.coroutines.launch
+import com.google.maps.android.compose.widgets.ScaleBar
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -235,5 +236,14 @@ fun MapScreen() {
                 .navigationBarsPadding()
                 .padding(16.dp)
         ) { Text("📍 Mi ubicación") }
+
+        // Puntos adicionales: barra de escala de Google Maps
+        ScaleBar(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .statusBarsPadding()
+                .padding(top = 64.dp, start = 12.dp),
+            cameraPositionState = cameraPositionState
+        )
     }
 }
